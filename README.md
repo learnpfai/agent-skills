@@ -46,6 +46,8 @@ No symlink needed; Cursor pulls skills from the repo directly.
 | Skill | Description |
 | --- | --- |
 | [pr-test-checklist](skills/pr-test-checklist/) | Turn a PR into a prioritized manual QA checklist |
+| [spec-run](skills/spec-run/) | Spec a prompt into a Linear issue under Planning, then — after approval — build it in a worktree off staging and open the PR |
+| [start-issue](skills/start-issue/) | Read a Linear ticket, fork a worktree off staging, open the IDE, and start on the task |
 
 ## Add a skill
 
