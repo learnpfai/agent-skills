@@ -130,11 +130,8 @@ skips `node_modules`, `.next`, build artifacts):
 /Users/ryanpey/Projects/learnpf/ryan/copy-gitignored.sh /Users/ryanpey/Projects/learnpf-lea-<NUM>
 ```
 
-Then install deps in the worktree:
-
-```bash
-(cd /Users/ryanpey/Projects/learnpf-lea-<NUM> && npm install)
-```
+Do **not** run `npm install` in the worktree. If a check can't run without
+`node_modules`, verify by reading instead and say which checks you skipped.
 
 ### 3. Do the work
 
@@ -184,5 +181,6 @@ URL. Optionally move the Linear issue to `In Review` with `save_issue`
 - Confirm the worktree path once before creating it (real filesystem side
   effect), then run the steps.
 - Never clobber an existing branch or worktree — reuse it.
+- Do not run `npm install` in the worktree as part of this skill.
 - Only commit and push as part of an approved Phase 2. Don't touch the main
   repo's working tree.

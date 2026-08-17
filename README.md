@@ -45,9 +45,14 @@ No symlink needed; Cursor pulls skills from the repo directly.
 
 | Skill | Description |
 | --- | --- |
+| [build-issue](skills/build-issue/) | Autonomously build an already-specced Linear ticket — worktree off staging, implement, push, open the PR |
+| [fix-issue](skills/fix-issue/) | Autonomously fix a small Linear bug end-to-end — worktree off staging, patch, push, open the PR |
 | [pr-test-checklist](skills/pr-test-checklist/) | Turn a PR into a prioritized manual QA checklist |
+| [prune](skills/prune/) | Clean up a repo's worktrees and stale local branches |
 | [spec-run](skills/spec-run/) | Spec a prompt into a Linear issue under Planning, then — after approval — build it in a worktree off staging and open the PR |
-| [start-issue](skills/start-issue/) | Read a Linear ticket, fork a worktree off staging, open the IDE, and start on the task |
+
+Which issue skill: **spec-run** when there's no ticket yet, **build-issue** when
+the ticket is specced, **fix-issue** when it's a small bug.
 
 ## Add a skill
 
