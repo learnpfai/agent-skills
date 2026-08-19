@@ -2,15 +2,15 @@
 name: prune
 description: >-
   Clean up a git repo: remove all of its worktrees (never the base repo) and
-  delete local branches whose tip commit is already on the remote — keeping
-  main, staging, and any branch with un-pushed local-only work. Use when the
-  user says /prune, "prune this repo", "clean up my branches/worktrees", or
-  asks to tidy up stale local branches.
+  delete local branches whose work is backed up — tip on origin, or tip exactly
+  matching a squash-merged PR head — keeping main, staging, and any branch with
+  un-pushed local-only work. Use when the user says /prune, "prune this repo",
+  "clean up my branches/worktrees", or asks to tidy up stale local branches.
 ---
 
 # prune
 
-Safe cleanup of a git repo. Two steps, no data loss.
+Safe cleanup of a git repo. Three steps, no data loss.
 
 ## 1. Remove worktrees
 
@@ -45,7 +45,32 @@ done
 Delete the DELETE set in one call: `git branch -D <b1> <b2> ...`. `-D` is safe
 here because every tip was verified on origin.
 
+## 3. Catch squash-merged branches
+
+This repo squash-merges PRs, so a merged branch's original commits never appear
+on origin — step 2 wrongly KEEPs them. Cross-check the KEEP set against merged
+PRs on GitHub:
+
+```bash
+gh pr list --state merged --limit 300 --json headRefName,headRefOid,number \
+  --jq '.[] | "\(.headRefName) \(.headRefOid) \(.number)"' > /tmp/merged_prs.txt
+```
+
+For each KEEP branch (skip the checked-out branch and any branch attached to a
+worktree), look up its name in the merged-PR list and compare
+`git rev-parse <branch>` to the PR's `headRefOid`:
+
+- **Exact match** → the local tip is precisely what was squash-merged; the work
+  is fully on the target branch. Safe to delete with `git branch -D`.
+- **Mismatch or no merged PR** → the branch may hold local commits that never
+  made it into the PR. Keep it and report it (with the PR number if one merged).
+
+Only the exact-SHA match is safe. Do not delete on "a PR with this branch name
+was merged" alone — the local tip can be behind or diverged from what merged.
+
 ## Always
 
 - Print the DELETE / KEEP lists and get a quick confirm before deleting.
 - Never delete `main` or `staging`; never remove the base repo worktree.
+- The checked-out branch can't be deleted (git refuses) — leave it and note
+  it's deletable once the user switches off it.
