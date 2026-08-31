@@ -160,7 +160,8 @@ PR.
 ## 4. Push and open the PR
 
 From the worktree, commit with a clear imperative message, push, and open the
-PR with `gh` (base `staging`):
+PR with `gh` (base `staging`). **Always open it as a draft** (`--draft`) —
+Ryan flips it to ready after his own pass; never `gh pr ready` it yourself:
 
 ```bash
 cd /Users/ryanpey/Projects/learnpf-lea-<NUM>
@@ -169,7 +170,7 @@ git commit -m "<imperative summary>
 
 <short body>"
 git push -u origin HEAD
-gh pr create --base staging --head <BRANCH> \
+gh pr create --draft --base staging --head <BRANCH> \
   --title "<issue title>" \
   --body "$(cat <<'EOF'
 ## Summary
