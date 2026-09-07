@@ -2,7 +2,7 @@
 name: build-issue
 description: >-
   Autonomously build an already-specced Linear ticket end-to-end (features, not
-  bugs): read the ticket, fork a worktree off staging (no npm install),
+  bugs): read the ticket, fork a worktree off staging (npm install included),
   implement the spec, push, and open a PR against staging. Use for features,
   refactors,
   copy passes, and multi-surface work when the user says /build-issue LEA-XXX or
@@ -34,8 +34,8 @@ Input: a Linear issue identifier (`LEA-XXX`) or URL, given after `/build-issue`
 or in the user's message. If no issue was given, ask for one — don't guess.
 
 **Autonomous:** Do not pause for approval between steps. Do not open the IDE with
-`code`. Do not run `npm install`. Commit, push, and create the PR yourself when
-the work is verified.
+`code`. Always run `npm install` in the worktree before verifying. Commit,
+push, and create the PR yourself when the work is verified.
 
 ---
 
@@ -123,10 +123,12 @@ The branch gets its real upstream on first push (`git push -u origin HEAD`).
 - Branch already exists → `git worktree add <worktree-dir> <BRANCH>` (no `-b`).
 - Worktree dir already exists → reuse it as-is.
 
-Copy gitignored local files only (no `npm install`):
+Copy gitignored local files, then install dependencies (always a real
+`npm install` — never symlink or clone `node_modules` from the main repo):
 
 ```bash
 /Users/ryanpey/Projects/learnpf/ryan/copy-gitignored.sh /Users/ryanpey/Projects/learnpf-lea-<NUM>
+cd /Users/ryanpey/Projects/learnpf-lea-<NUM> && npm install
 ```
 
 ## 3. Build it
@@ -149,9 +151,9 @@ Implement **inside the worktree** — every edit, command, and check runs agains
 4. **Verify before push.** Build, lint, run the tests that cover what you
    touched, and drive the app in the preview when the change is visible — as
    far as the worktree allows. Do not push a red tree. For UI work, capture
-   screenshots for the PR. If a check can't run because the worktree has no
-   `node_modules`, don't install them: verify by reading, note in the report
-   which checks you couldn't run, and let CI cover the rest.
+   screenshots for the PR. The worktree has its own `node_modules` from step
+   2, so tsc, jest, biome (changed paths only), and `next build` all run
+   locally — run them; do not lean on CI for checks you can run here.
 
 If you cannot build it without more product input, stop and report what you did,
 what's blocking, and the specific decision you need — do not open a speculative
@@ -216,7 +218,8 @@ you deliberately left out, and the PR URL.
   worktree suffix. Don't invent variants.
 - Never clobber an existing branch or worktree — reuse it.
 - Don't touch the main repo's working tree.
-- Do not run `npm install` in the worktree as part of this skill.
+- Always run `npm install` in the worktree after creating it. Never symlink or
+  APFS-clone `node_modules` from the main repo.
 - Do not open the IDE with `code` unless the user asks separately.
 - Only create commits when implementing this workflow; follow the user's git
   safety rules (no force push to main/staging, no skipping hooks unless asked).

@@ -124,14 +124,16 @@ git worktree add -b <BRANCH> /Users/ryanpey/Projects/learnpf-lea-<NUM> origin/st
 ### 2. Make it runnable
 
 From the main repo, copy gitignored files (env, local config, private `ryan/`;
-skips `node_modules`, `.next`, build artifacts):
+skips `node_modules`, `.next`, build artifacts), then install dependencies:
 
 ```bash
 /Users/ryanpey/Projects/learnpf/ryan/copy-gitignored.sh /Users/ryanpey/Projects/learnpf-lea-<NUM>
+cd /Users/ryanpey/Projects/learnpf-lea-<NUM> && npm install
 ```
 
-Do **not** run `npm install` in the worktree. If a check can't run without
-`node_modules`, verify by reading instead and say which checks you skipped.
+Always a real `npm install` — never symlink or clone `node_modules` from the
+main repo. With dependencies in place, run tsc, jest, and biome (changed paths
+only) locally rather than leaving them to CI.
 
 ### 3. Do the work
 
@@ -181,6 +183,7 @@ URL. Optionally move the Linear issue to `In Review` with `save_issue`
 - Confirm the worktree path once before creating it (real filesystem side
   effect), then run the steps.
 - Never clobber an existing branch or worktree — reuse it.
-- Do not run `npm install` in the worktree as part of this skill.
+- Always run `npm install` in the worktree after creating it. Never symlink or
+  APFS-clone `node_modules` from the main repo.
 - Only commit and push as part of an approved Phase 2. Don't touch the main
   repo's working tree.
