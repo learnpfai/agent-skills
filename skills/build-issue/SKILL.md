@@ -176,26 +176,21 @@ gh pr create --draft --base staging --head <BRANCH> \
   --title "<issue title>" \
   --body "$(cat <<'EOF'
 ## Summary
-<what changed and why>
+<what changed and why, in two or three sentences>
 
-## Linear
-<LEA-XXX> — <issue URL>
+<LEA-XXX>: <issue URL>
 
-## Acceptance criteria
-- [ ] <criterion from the ticket, one line each>
-
-## Test plan
-- [ ] <how you verified>
-
-## Out of scope
-<anything the ticket deferred, or that you hit and deliberately left>
+## Core decisions
+- <each decision a reviewer needs to know, one line each>
 EOF
 )"
 ```
 
-The PR body restates the ticket's acceptance criteria as a checklist — that's
-what makes a feature PR reviewable without opening Linear. Attach screenshots
-for anything user-visible.
+Keep the PR body to exactly those two sections. No acceptance-criteria
+checklist, test plan, out-of-scope list, design notes, or setup steps: Ryan
+reads the ticket for criteria and the diff for detail. A decision earns a bullet
+only if a reviewer would otherwise ask "why this way?". Attach screenshots under
+the summary for anything user-visible.
 
 Move the issue to `In Review` with `save_issue` (`id: LEA-XXX`,
 `state: In Review`) once the PR is open.

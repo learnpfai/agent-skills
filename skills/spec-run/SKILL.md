@@ -160,11 +160,13 @@ gh pr create --base staging --head <BRANCH> \
   --body "<PR body>"
 ```
 
-PR body should:
-- Summarize what changed and why.
-- Link the Linear issue (`LEA-XXX` + URL) — Linear auto-links via the branch
-  name, but include it explicitly too.
-- Restate the acceptance criteria as a checklist.
+PR body is exactly two sections, nothing else:
+- `## Summary`: what changed and why in two or three sentences, then the Linear
+  issue (`LEA-XXX` + URL) on its own line.
+- `## Core decisions`: one line per decision a reviewer would otherwise ask
+  about.
+
+No acceptance-criteria checklist, test plan, out-of-scope list, or design notes.
 
 ### 5. Report
 

@@ -140,19 +140,21 @@ gh pr create --base staging --head <BRANCH> \
   --title "<issue title>" \
   --body "$(cat <<'EOF'
 ## Summary
-<what changed and why>
+<what changed and why, in two or three sentences>
 
-## Linear
-<LEA-XXX> — <issue URL>
+<LEA-XXX>: <issue URL>
 
-## Test plan
-- [ ] <how you verified>
+## Core decisions
+- <only if the fix involved a real choice; omit the section otherwise>
 EOF
 )"
 ```
 
-PR body should summarize the fix, link the Linear issue explicitly, and include
-a test plan checklist.
+Keep the PR body to exactly those two sections. No acceptance-criteria
+checklist, test plan, out-of-scope list, design notes, or setup steps: Ryan
+reads the ticket for criteria and the diff for detail. A decision earns a bullet
+only if a reviewer would otherwise ask "why this way?". Attach screenshots under
+the summary for anything user-visible.
 
 Optionally move the issue to `In Review` with `save_issue` (`id: LEA-XXX`,
 `state: In Review`) once the PR is open.
