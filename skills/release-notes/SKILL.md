@@ -10,9 +10,11 @@ description: >-
 # Release Notes
 
 Write the description for the release PR that merges `staging` into `main`.
-The output is a plain bullet list under the cycle name. It is read by the
-whole company, so it leads with what people will notice and hides
-implementation detail under the Docs, Infra, CI, Tweaks and Bugs headings.
+The output is a plain bullet list under the cycle name. It is pasted into
+the PR body and into Slack unchanged, so it uses plain-text bullets that
+both render the same way. It is read by the whole company, so it leads with
+what people will notice and hides implementation detail under the Docs,
+Infra, CI, Tweaks and Bugs headings.
 
 ## Inputs
 
@@ -22,23 +24,32 @@ If a PR number is given, use that PR's commit range instead of
 
 ## Workflow
 
-### 1. Collect the commits
+### 1. Collect the commits and read the PRs
 
 ```bash
 git fetch -q origin
 git log --oneline origin/main..origin/staging
 ```
 
-For any commit whose subject is not self-explanatory, read its body and
-touched files:
+Every commit subject ending in `(#NNN)` and every `Merge pull request #NNN`
+is a PR. Read all of them; the subject alone is not enough:
+
+```bash
+gh pr view <NNN> --json title,body -q '.title + "\n---\n" + .body'
+```
+
+The PR body is where the real change is described: a "tweak" PR often fixes
+a bug, a "fix" PR often ships a feature, and a schema-only PR usually has no
+visible effect. Group by what the body says, not by the title.
+
+For commits with no PR, read the body and touched files:
 
 ```bash
 git show --stat --format='%s%n%b' <sha>
 ```
 
-Squash-merged PRs land as one commit; their body usually carries the sub-items.
-Feature branches merged with a merge commit land as several commits; fold them
-into one bullet.
+Squash-merged PRs land as one commit. Feature branches merged with a merge
+commit land as several commits; fold them into one bullet.
 
 ### 2. Group into bullets
 
@@ -61,6 +72,10 @@ order:
 
 Rules:
 
+- Slack-safe formatting only. Top-level bullets are `•`, sub-bullets are
+  `◦` indented four spaces. No markdown list markers (`*`, `-`), no bold,
+  no headers, no links. Backticks are the only markup, since they render in
+  both GitHub and Slack.
 - One line per bullet, sentence fragment, no full stops.
 - No Linear ticket IDs anywhere. Strip `LEA-123` from commit subjects.
 - No PR numbers, SHAs, file paths, or function names.
@@ -74,73 +89,75 @@ Rules:
 
 ### 3. Output
 
-Print the list in a fenced block so it can be pasted into the PR body. No
-preamble and no notes after it unless a grouping call is genuinely ambiguous,
-in which case add at most two one-line notes.
+Print the list in a fenced block so it can be copied as-is into the PR body
+or a Slack message. No preamble and no notes after it unless a grouping call
+is genuinely ambiguous, in which case add at most two one-line notes.
 
 ## Examples
 
 ```
 Cycle 42.3
 
-* Help Center refresh + learner updates (chronological release notes, feature recordings)
-* Revision problem chats + retry help (same as mastery)
-* School admin flag on teachers
-* Learning gain BQ reports
-* Docs
-   * Post-ready review sequence
-* Infra
-   * Shared math rules across every prompt (tutor, chatbot, checkers, MCP resource)
-* CI
-   * Auto review prompt + model/depth labels
-   * PostHog surveys kept out of e2e
-* Tweaks
-   * Syllabus tree drops module/lesson descriptions
-   * Remove mastery phase banner from lesson preview
-* Bugs
-   * Render tutor maths written as \(…\)
-   * Money inside KaTeX renders correctly
+• Help Center refresh + learner What's New page (Modules, Progress Review, Revision, hints and AI chat; teacher updates coming soon)
+• Revision gets Show hint / Talk it through on a wrong answer, same as Apply and Mastery
+• Learning gain BQ reports (school-level and per-module student gain)
+• Docs
+    ◦ Post-ready review sequence
+    ◦ Authors keep money amounts outside math
+• Infra
+    ◦ School admin flag on teacher users (column only, no UI yet)
+    ◦ Shared math rules across every prompt (tutor, chatbot, checkers, MCP resource)
+• CI
+    ◦ Auto review now actually runs (its prompt never resolved, so every run was a silent no-op)
+    ◦ Auto review labels renamed to `Review: Sonnet-medium` / `Sonnet-high` / `Opus-medium` / `Opus-high`
+    ◦ PostHog surveys blocked in e2e browsers
+• Tweaks
+    ◦ Angles and Perpendicular & Parallel Lines lessons opened to MCP problem writes
+    ◦ Syllabus tree drops module/lesson descriptions so titles stop truncating
+• Bugs
+    ◦ Tutor maths written as \(…\) rendered as raw code
+    ◦ Money written inside math (`$\$10$`) broke rendering
+    ◦ Revision charged every retry as helped, so unaided retries paid 1 XP instead of 2
 ```
 
 ```
 Cycle 41.x
 
-* Mastery Cross-module revision
-* Content Hub merged into app
-* Apply/mastery problem chats + hints
-* My Progress page
-* Learner Module Page (replace dashboard)
-* Add Syllabus Ordering
-* Docs
-* Infra
-   * Problem options → `problem_options` table
-   * Unified chatbot function
-   * Dead-code cull
-   * Lesson engine refactor
-* CI
-   * Preview Branches
-   * Auto Review
-* Tweaks
-   * Chatbot restyled purple → cream/amber
+• Mastery Cross-module revision
+• Content Hub merged into app
+• Apply/mastery problem chats + hints
+• My Progress page
+• Learner Module Page (replace dashboard)
+• Add Syllabus Ordering
+• Infra
+    ◦ Problem options → `problem_options` table
+    ◦ Unified chatbot function
+    ◦ Dead-code cull
+    ◦ Lesson engine refactor
+• CI
+    ◦ Preview Branches
+    ◦ Auto Review
+• Tweaks
+    ◦ Chatbot restyled purple → cream/amber
 ```
 
 ```
 Cycle 40.2
 
-* Content Checker Tweaks
-   * Disable Prompt Cache
-   * Open lesson editor directly to question
+• Content Checker Tweaks
+    ◦ Disable Prompt Cache
+    ◦ Open lesson editor directly to question
 ```
 
 ```
 Cycle 39.4
 
-* Upgraded Read Only MCP (List modules, lessons, LOs, AUs)
-* Invent Cheatsheet UI + Admin Upload
-* Allow Red Flags to be Resolved
-* Tweaks
-   * Invent Submission Tweaks
-* Bugs
-   * Fix problem order for mastery lesson
-   * Content Checker Bug Fixes
+• Upgraded Read Only MCP (List modules, lessons, LOs, AUs)
+• Invent Cheatsheet UI + Admin Upload
+• Allow Red Flags to be Resolved
+• Tweaks
+    ◦ Invent Submission Tweaks
+• Bugs
+    ◦ Fix problem order for mastery lesson
+    ◦ Content Checker Bug Fixes
 ```
