@@ -76,7 +76,12 @@ Rules:
   `◦` indented four spaces. No markdown list markers (`*`, `-`), no bold,
   no headers, no links. Backticks are the only markup, since they render in
   both GitHub and Slack.
-- One line per bullet, sentence fragment, no full stops.
+- Every bullet is a name, not a sentence: 2 to 6 words, the way a product
+  person would title it. No how, no why, no counts, no list of the parts.
+  A parenthetical only when the name alone misleads, and at most 3 words.
+  If a bullet needs a comma, it is too long.
+- Fold hard. Several fixes in one area share one bullet ("Invent upload
+  fixes"), and a feature built across many PRs is one bullet.
 - No Linear ticket IDs anywhere. Strip `LEA-123` from commit subjects.
 - No PR numbers, SHAs, file paths, or function names.
 - If a commit reverts or supersedes another commit in the same range, list
@@ -94,31 +99,6 @@ or a Slack message. No preamble and no notes after it unless a grouping call
 is genuinely ambiguous, in which case add at most two one-line notes.
 
 ## Examples
-
-```
-Cycle 42.3
-
-• Help Center refresh + learner What's New page (Modules, Progress Review, Revision, hints and AI chat; teacher updates coming soon)
-• Revision gets Show hint / Talk it through on a wrong answer, same as Apply and Mastery
-• Learning gain BQ reports (school-level and per-module student gain)
-• Docs
-    ◦ Post-ready review sequence
-    ◦ Authors keep money amounts outside math
-• Infra
-    ◦ School admin flag on teacher users (column only, no UI yet)
-    ◦ Shared math rules across every prompt (tutor, chatbot, checkers, MCP resource)
-• CI
-    ◦ Auto review now actually runs (its prompt never resolved, so every run was a silent no-op)
-    ◦ Auto review labels renamed to `Review: Sonnet-medium` / `Sonnet-high` / `Opus-medium` / `Opus-high`
-    ◦ PostHog surveys blocked in e2e browsers
-• Tweaks
-    ◦ Angles and Perpendicular & Parallel Lines lessons opened to MCP problem writes
-    ◦ Syllabus tree drops module/lesson descriptions so titles stop truncating
-• Bugs
-    ◦ Tutor maths written as \(…\) rendered as raw code
-    ◦ Money written inside math (`$\$10$`) broke rendering
-    ◦ Revision charged every retry as helped, so unaided retries paid 1 XP instead of 2
-```
 
 ```
 Cycle 41.x
@@ -160,4 +140,18 @@ Cycle 39.4
 • Bugs
     ◦ Fix problem order for mastery lesson
     ◦ Content Checker Bug Fixes
+```
+
+```
+Cycle 37
+
+• Landing Page Changes
+    ◦ PF-course
+    ◦ Team changes
+• Student Intro Lesson
+• Teacher set up checklist
+• Content Checker Agent
+• Bugs
+    ◦ Dashboard Username
+    ◦ Misconceptions & Hint Tweaks for upload script
 ```
